@@ -1,8 +1,10 @@
 package com.netflix.backend.modules.auth.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
+import com.netflix.backend.entity.AuthProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +53,38 @@ public class AuthService {
 
 		return new MessageResponse("OTP sent to email");
 	}
+
+	public User handleOAuthUser(String email, String name) {
+
+		Optional<User> optionalUser = userRepository.findByEmail(email);
+
+		if (optionalUser.isPresent()) {
+
+			User existingUser = optionalUser.get();
+
+			if (existingUser.getProvider() == AuthProvider.LOCAL) {
+
+				existingUser.setProvider(AuthProvider.GOOGLE);
+				existingUser.setVerified(true);
+
+				return userRepository.save(existingUser);
+			}
+
+			return existingUser;
+		}
+
+		User newUser = User.builder()
+				.email(email)
+				.password(null)
+				.provider(AuthProvider.GOOGLE)
+				.role(Role.ROLE_USER)
+				.tokenVersion(0)
+				.isVerified(true)
+				.build();
+
+		return userRepository.save(newUser);
+	}
+
 
 	@Transactional
 	public MessageResponse verifyAccount(VerifyRequest request) {

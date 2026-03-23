@@ -1,0 +1,84 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Success</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #0f2027;
+            background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 10px;
+            width: 500px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            margin-top: 15px;
+            border-radius: 5px;
+            border: none;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            border: none;
+            background: #00c6ff;
+            color: black;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0072ff;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>Login Successful 🎉</h2>
+    <p>Your Access Token:</p>
+
+    <textarea id="tokenBox" readonly></textarea>
+
+    <button onclick="copyToken()">Copy Token</button>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("accessToken");
+
+    document.getElementById("tokenBox").value = token || "No token found";
+
+    function copyToken() {
+        const box = document.getElementById("tokenBox");
+        box.select();
+        document.execCommand("copy");
+        alert("Token copied!");
+    }
+</script>
+
+</body>
+</html>
+```

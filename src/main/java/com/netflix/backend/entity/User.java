@@ -35,7 +35,7 @@ public class User {
 	@Column(nullable = false, unique = true)
 	private String email;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String password;
 
 	@Enumerated(EnumType.STRING)
@@ -54,5 +54,8 @@ public class User {
 	private int tokenVersion;
 	
 	private boolean isVerified;
+
+	@Enumerated(EnumType.STRING)
+	private AuthProvider provider;
 
 }
