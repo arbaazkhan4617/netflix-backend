@@ -12,4 +12,14 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> handleEmailException(EmailSendingException ex) {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
 	}
+
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
+	    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
+
+	@ExceptionHandler(InvalidCredentialsException.class)
+	public ResponseEntity<String> handleInvalidCredentials(InvalidCredentialsException ex) {
+	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+	}
 }

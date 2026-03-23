@@ -15,9 +15,9 @@ import com.netflix.backend.entity.User;
 import com.netflix.backend.exception.InvalidTokenException;
 import com.netflix.backend.exception.TokenExpiredException;
 import com.netflix.backend.exception.UserNotFoundException;
-import com.netflix.backend.modules.user.repository.UserRepository;
 import com.netflix.backend.security.jwt.JwtUtil;
 import com.netflix.backend.security.service.TokenBlacklistService;
+import com.netflix.backend.user.repository.UserRepository;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -68,7 +68,7 @@ public class JwtFilter extends OncePerRequestFilter {
 			User user = userRepository.findByEmail(email)
 					.orElseThrow(() -> new UserNotFoundException("User not found"));
 
-			if (tokenVersion != user.getTokenVersion()) {
+			if (!tokenVersion.equals(user.getTokenVersion())) {
 				throw new TokenExpiredException("Token invalid (version mismatch)");
 			}
 

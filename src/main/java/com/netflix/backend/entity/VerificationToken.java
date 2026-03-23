@@ -26,7 +26,7 @@ public class VerificationToken {
 
 	private String email;
 
-	private String otp;
+	private Integer otp;
 
 	private LocalDateTime expiryDate;
 }

@@ -1,4 +1,4 @@
-package com.netflix.backend.modules.user.repository;
+package com.netflix.backend.user.repository;
 
 import java.util.Optional;
 

@@ -1,5 +1,6 @@
-package com.netflix.backend.modules.auth.service;
+package com.netflix.backend.auth.service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Random;
 
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.netflix.backend.common.email.EmailService;
 import com.netflix.backend.entity.VerificationToken;
-import com.netflix.backend.modules.user.repository.VerificationTokenRepository;
+import com.netflix.backend.user.repository.VerificationTokenRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +21,8 @@ public class VerificationService {
 
 	public void generateOtp(String email) {
 
-		String otp = String.valueOf(new Random().nextInt(900000) + 100000);
+		SecureRandom random = new SecureRandom();
+	    Integer otp = 100000 + random.nextInt(900000);
 
 		repository.deleteByEmail(email);
 
@@ -33,7 +35,7 @@ public class VerificationService {
 
 	}
 
-	public void verifyOtp(String email, String otp) {
+	public void verifyOtp(String email, Integer otp) {
 
 		VerificationToken token = repository.findByEmailAndOtp(email, otp)
 				.orElseThrow(() -> new RuntimeException("Invalid OTP"));

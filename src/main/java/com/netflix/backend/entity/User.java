@@ -47,9 +47,7 @@ public class User {
 	@UpdateTimestamp
 	private LocalDateTime updatedAt;
 	
-	private String device;
-	
-	private String ipAddress;
+	private LocalDateTime lastLoginAt;
 	
 	private int tokenVersion;
 	

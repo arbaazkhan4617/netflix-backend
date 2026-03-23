@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.netflix.backend.exception.InvalidTokenException;
@@ -11,20 +12,33 @@ import com.netflix.backend.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class JwtUtil {
 
-	private final String SECRET = "my-secret-key-my-secret-key-my-secret-key";
+	private String secret;
+	private Long accessExpiry;
+	private Long refreshExpiry;
+	private SecretKey key;
+	
+	@PostConstruct
+	public void init() {
+	    this.key = Keys.hmacShaKeyFor(secret.getBytes());
+	}
+	
+	public JwtUtil(@Value("${jwt.secret}") String secret, @Value("${jwt.access.expiry}") Long accessExpiry, @Value("${jwt.refresh.expiry}") Long refreshExpiry) {
+		this.secret = secret;
+		this.accessExpiry = accessExpiry;
+		this.refreshExpiry = refreshExpiry;
+	}	
 
-	private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
-
-	public String generateAccessToken(String email, int tokenVersion) {
+	public String generateAccessToken(String email, Integer tokenVersion) {
 		return Jwts.builder().subject(email).claim("version", tokenVersion).issuedAt(new Date())
-				.expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15)).signWith(key).compact();
+				.expiration(new Date(System.currentTimeMillis() + accessExpiry)).signWith(key).compact();
 	}
 
-	public int extractVersion(String token) {
+	public Integer extractVersion(String token) {
 		return (Integer) getClaims(token).get("version");
 	}
 
@@ -54,7 +68,7 @@ public class JwtUtil {
 
 	public String generateRefreshToken(String email) {
 		return Jwts.builder().subject(email).issuedAt(new Date())
-				.expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 7)).signWith(key).compact();
+				.expiration(new Date(System.currentTimeMillis() + refreshExpiry)).signWith(key).compact();
 	}
 
 	public long getRemainingValidity(String token) {

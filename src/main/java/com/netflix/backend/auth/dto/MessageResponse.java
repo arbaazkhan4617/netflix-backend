@@ -1,4 +1,4 @@
-package com.netflix.backend.modules.auth.dto;
+package com.netflix.backend.auth.dto;
 
 public record MessageResponse(String message) {
 }

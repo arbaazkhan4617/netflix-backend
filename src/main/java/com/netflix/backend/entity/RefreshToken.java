@@ -31,4 +31,6 @@ public class RefreshToken {
 	private LocalDateTime expiryDate;
 	
 	private String device;
+		
+	private String ipAddress;
 }

@@ -1,4 +1,4 @@
-package com.netflix.backend.modules.auth.dto;
+package com.netflix.backend.auth.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

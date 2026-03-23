@@ -1,13 +1,14 @@
-package com.netflix.backend.modules.auth.service;
+package com.netflix.backend.auth.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.netflix.backend.entity.RefreshToken;
-import com.netflix.backend.modules.user.repository.RefreshTokenRepository;
+import com.netflix.backend.user.repository.RefreshTokenRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,12 +33,16 @@ public class RefreshTokenService {
 
     public RefreshToken validate(String rawToken, String email) {
 
-        List<RefreshToken> tokens = repository.findByEmail(email);
+        Optional<RefreshToken> tokenOpt = repository.findByTokenHash(email);
+        
+        RefreshToken token = tokenOpt
+                .orElseThrow(() -> new RuntimeException("No refresh token found"));
 
-        return tokens.stream()
-                .filter(t -> passwordEncoder.matches(rawToken, t.getTokenHash()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+        if (!passwordEncoder.matches(rawToken, token.getTokenHash())) {
+            throw new RuntimeException("Invalid refresh token");
+        }
+
+        return token;
     }
 
     public void delete(RefreshToken token) {
